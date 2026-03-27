@@ -1,0 +1,84 @@
+resources:
+  jobs:
+    DE_Miniproject_orchestration:
+      name: DE_Miniproject_orchestration
+      tasks:
+        - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/01_bronze/01_raw/02_bronze_pipeline/Bronze
+              Pipeline Setup
+            source: WORKSPACE
+        - task_key: silver_auto_customer_survey
+          depends_on:
+            - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/02_silver/01_transformation/01_silver_notebook/silver
+              pipeline customer_survey
+            source: WORKSPACE
+        - task_key: silver_auto_estimate
+          depends_on:
+            - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/02_silver/01_transformation/01_silver_notebook/silver
+              pipeline estimate
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: silver_auto_invoice
+          depends_on:
+            - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/02_silver/01_transformation/01_silver_notebook/silver
+              pipeline invoice
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: silver_auto_ns_budget
+          depends_on:
+            - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/02_silver/01_transformation/01_silver_notebook/silver
+              pipeline ns_budget
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: silver_auto_order
+          depends_on:
+            - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/02_silver/01_transformation/01_silver_notebook/silver
+              pipeline order
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: silver_auto_store
+          depends_on:
+            - task_key: bronze_auto
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/02_silver/01_transformation/01_silver_notebook/silver
+              pipeline store
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: gold_auto_mart
+          depends_on:
+            - task_key: silver_auto_estimate
+            - task_key: silver_auto_customer_survey
+            - task_key: silver_auto_store
+            - task_key: silver_auto_invoice
+            - task_key: silver_auto_order
+            - task_key: silver_auto_ns_budget
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/03_gold/01_gold_marts_notebook/gold
+              dim&fact notebook
+            source: WORKSPACE
+        - task_key: gold_auto_report
+          depends_on:
+            - task_key: gold_auto_mart
+          notebook_task:
+            notebook_path: /Workspace/Users/gokulanandh2712@gmail.com/DE_Miniproject_Automobile/03_gold/02_kpi_reports/Gold
+              KPI Reports
+            source: WORKSPACE
+          environment_key: Default
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED
